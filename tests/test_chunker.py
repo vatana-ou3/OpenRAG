@@ -13,6 +13,7 @@ def test_simple_chunker_splits_text_with_overlap() -> None:
     assert [chunk.text for chunk in chunks] == ["abcd", "defg", "ghij", "j"]
     assert chunks[0].document_id == "doc-1"
     assert chunks[0].metadata["source"] == "sample.txt"
+    assert chunks[0].metadata["chunker"] == "simple"
     assert chunks[1].metadata["start"] == 3
 
 

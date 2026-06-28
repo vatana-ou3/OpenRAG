@@ -42,6 +42,7 @@ class SimpleChunker(BaseChunker):
                             "chunk_number": chunk_number,
                             "start": start,
                             "end": min(end, len(text)),
+                            "chunker": "simple",
                         },
                     )
                 )

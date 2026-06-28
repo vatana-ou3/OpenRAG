@@ -75,7 +75,7 @@ The default pipeline uses:
 - `DocxParser`
 - `AudioParser`
 - `ParserRouter`
-- `SimpleChunker`
+- `MabChunker`
 - `KeywordRetriever`
 - `OllamaGenerator`
 
@@ -85,16 +85,40 @@ You can swap components when creating `RAG`:
 
 ```python
 from openrag import RAG
-from openrag.chunkers import SimpleChunker
+from openrag.chunkers import MabChunker, SimpleChunker
 from openrag.retrievers import KeywordRetriever
 
+# Good for plain text when you only need basic character windows.
+simple_rag = RAG(
+    chunker=SimpleChunker(chunk_size=800, overlap=100),
+)
+
+# Good for mixed TXT, PDF, DOCX, and audio transcripts.
 rag = RAG(
-    chunker=SimpleChunker(chunk_size=500, overlap=50),
+    chunker=MabChunker(chunk_size=260, overlap=50),
     retriever=KeywordRetriever(),
 )
 ```
 
 Future components can implement the base interfaces in `openrag.parsers`, `openrag.chunkers`, `openrag.retrievers`, and `openrag.generators`.
+
+## Chunking Strategies
+
+OpenRAG includes two chunkers:
+
+- `SimpleChunker`: basic fixed-size character chunks with character overlap
+- `MabChunker`: advanced structure-aware word chunks for mixed document types
+
+The default `RAG()` pipeline uses `MabChunker`. It:
+
+- Normalizes text before chunking by cleaning line breaks, tabs, extra spaces, and merged sentences
+- Detects common structures such as headings, numbered sections, bullets, steps, key-value fields, and table-like lines
+- Keeps headings attached to the content that follows them
+- Groups related paragraphs, lists, and structured records before applying size limits
+- Limits chunks to about 260 words by default
+- Uses 50 words of overlap when a large section must be split
+- Merges chunks shorter than 25 words with nearby content when possible
+- Falls back to word-window splitting for long or poorly formatted content
 
 ## Parser Roadmap
 

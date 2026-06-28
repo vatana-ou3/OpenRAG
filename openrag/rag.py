@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from openrag.chunkers.base import BaseChunker
-from openrag.chunkers.simple_chunker import SimpleChunker
+from openrag.chunkers.mab_chunker import MabChunker
 from openrag.core.chunk import Chunk
 from openrag.core.pipeline import RAGResult
 from openrag.generators.base import BaseGenerator
@@ -23,7 +23,7 @@ class RAG:
         generator: BaseGenerator | None = None,
     ) -> None:
         self.parser = parser or ParserRouter.with_defaults()
-        self.chunker = chunker or SimpleChunker()
+        self.chunker = chunker or MabChunker()
         self.retriever = retriever or KeywordRetriever()
         self.generator = generator or OllamaGenerator()
         self.chunks: list[Chunk] = []
