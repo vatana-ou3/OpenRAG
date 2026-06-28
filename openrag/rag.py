@@ -7,7 +7,7 @@ from openrag.core.pipeline import RAGResult
 from openrag.generators.base import BaseGenerator
 from openrag.generators.ollama_generator import OllamaGenerator
 from openrag.parsers.base import BaseParser
-from openrag.parsers.txt_parser import TxtParser
+from openrag.parsers.router import ParserRouter
 from openrag.retrievers.base import BaseRetriever
 from openrag.retrievers.keyword_retriever import KeywordRetriever
 
@@ -22,7 +22,7 @@ class RAG:
         retriever: BaseRetriever | None = None,
         generator: BaseGenerator | None = None,
     ) -> None:
-        self.parser = parser or TxtParser()
+        self.parser = parser or ParserRouter.with_defaults()
         self.chunker = chunker or SimpleChunker()
         self.retriever = retriever or KeywordRetriever()
         self.generator = generator or OllamaGenerator()

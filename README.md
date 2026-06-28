@@ -5,6 +5,9 @@ OpenRAG is a small, beginner-friendly Python framework for local retrieval-augme
 The first version keeps the foundation intentionally simple:
 
 - Load TXT documents
+- Load PDF documents with pdfplumber
+- Load DOCX documents with python-docx
+- Load audio files with Whisper
 - Split text into chunks
 - Store chunks in memory
 - Retrieve chunks with keyword search
@@ -28,6 +31,18 @@ ollama serve
 ollama pull llama3.2
 ```
 
+Audio parsing is optional because Whisper is a heavier dependency:
+
+```bash
+pip install -e ".[audio]"
+```
+
+PDF and DOCX parsing are optional document dependencies:
+
+```bash
+pip install -e ".[documents]"
+```
+
 ## Quick Start
 
 ```python
@@ -35,6 +50,9 @@ from openrag import RAG
 
 rag = RAG()
 rag.add("docs/policy.txt")
+rag.add("docs/handbook.pdf")
+rag.add("docs/benefits.docx")
+rag.add("recordings/meeting.mp3")
 
 answer = rag.ask("What is the leave policy?")
 print(answer)
@@ -53,6 +71,10 @@ OpenRAG is built from small interchangeable components:
 The default pipeline uses:
 
 - `TxtParser`
+- `PdfParser`
+- `DocxParser`
+- `AudioParser`
+- `ParserRouter`
 - `SimpleChunker`
 - `KeywordRetriever`
 - `OllamaGenerator`
@@ -73,6 +95,16 @@ rag = RAG(
 ```
 
 Future components can implement the base interfaces in `openrag.parsers`, `openrag.chunkers`, `openrag.retrievers`, and `openrag.generators`.
+
+## Parser Roadmap
+
+OpenRAG currently supports TXT, PDF, DOCX, and audio files. Planned parser support:
+
+- Markdown
+- CSV
+- Video, using MoviePy to extract audio and Whisper for transcription
+
+HTML parsing is intentionally out of scope for now.
 
 ## Running Tests
 
